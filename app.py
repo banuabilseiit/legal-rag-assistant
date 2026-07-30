@@ -69,7 +69,6 @@ with st.sidebar:
              "Получить: https://huggingface.co/settings/tokens",
     )
 
-    model_name = st.text_input("Модель для генерации", value=LLM_MODEL_NAME)
 
     mode_label = st.radio(
         "Формат ответа",
