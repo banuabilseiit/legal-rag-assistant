@@ -367,6 +367,24 @@ mode = (
 # ---------------------------------------------------------------------------
 st.markdown("### Ваш вопрос")
 
+st.markdown(
+    """
+    <style>
+    div[data-testid="stTextArea"] textarea {
+        color: #000000 !important;
+        caret-color: #000000 !important;
+        background-color: #ffffff !important;
+    }
+
+    div[data-testid="stTextArea"] textarea::placeholder {
+        color: #64748b !important;
+        opacity: 1 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 query = st.text_area(
     "Введите юридический вопрос",
     height=145,
