@@ -61,7 +61,7 @@ git push
 4. Нажмите **Deploy**.
 
 Первый запуск займёт несколько минут — приложение скачает модель эмбеддингов
-(`intfloat/multilingual-e5-large`, ~2GB) и построит индекс из `chunks.jsonl`.
+(`intfloat/multilingual-e5-base`) и построит индекс из `chunks.jsonl`.
 Благодаря `st.cache_resource` это происходит один раз, пока приложение не "уснёт"
 от неактивности.
 
