@@ -414,19 +414,18 @@ with col_hint:
 # 9. Получение ответа
 # ---------------------------------------------------------------------------
 if submit:
+    # Проверка токена
     if not hf_token.strip():
-        st.warning(
-            "Введите Hugging Face токен в боковой панели."
-        )
+        st.warning("Введите Hugging Face токен в боковой панели.")
         st.stop()
 
+    # Проверка вопроса
     if not query.strip():
         st.warning("Введите вопрос.")
         st.stop()
 
-    with st.spinner(
-        "Ищу подходящие нормы и формирую ответ..."
-    ):
+    # Поиск документов и формирование ответа
+    with st.spinner("Ищу подходящие нормы и формирую ответ..."):
         try:
             result = answer(
                 query=query.strip(),
@@ -437,56 +436,67 @@ if submit:
                 top_k=top_k,
                 model_name=model_name.strip(),
             )
+
         except Exception as error:
-            st.error(
-                "Не удалось получить ответ от языковой модели."
-            )
+            st.error("Не удалось получить ответ от языковой модели.")
+
             with st.expander("Показать техническую ошибку"):
                 st.code(str(error))
+
             st.stop()
 
+    # Безопасная обработка текста ответа
     safe_answer = html.escape(
-        str(result["answer"])
+        str(result.get("answer", "Ответ не получен."))
     ).replace("\n", "<br>")
 
-    st.markdown(
-        f"""
-        <div
-            class="answer-card"
-            style="
-                color: #000000 !important;
-                background-color: #ffffff;
-            "
-        >
-            <div class="answer-label">
-                Ответ системы
-            </div>
+    # Окно ответа
+    answer_html = (
+        '<div style="'
+        'background-color:#ffffff;'
+        'border:1px solid #dbe3ef;'
+        'border-radius:18px;'
+        'padding:24px 26px;'
+        'margin-top:20px;'
+        'margin-bottom:24px;'
+        'box-shadow:0 10px 28px rgba(15,23,42,0.06);'
+        '">'
+        '<div style="'
+        'color:#2563eb;'
+        'font-size:0.82rem;'
+        'font-weight:800;'
+        'letter-spacing:0.06em;'
+        'text-transform:uppercase;'
+        'margin-bottom:12px;'
+        '">'
+        'Ответ системы'
+        '</div>'
+        '<div style="'
+        'color:#000000 !important;'
+        'font-size:1rem;'
+        'font-weight:400;'
+        'line-height:1.7;'
+        '">'
+        f'{safe_answer}'
+        '</div>'
+        '</div>'
+    )
 
-            <div
-                style="
-                    color: #000000 !important;
-                    font-size: 1rem;
-                    line-height: 1.7;
-                "
-            >
-                {safe_answer}
-            </div>
-        </div>
-        """,
+    st.markdown(
+        answer_html,
         unsafe_allow_html=True,
     )
 
+    # Использованные источники
     st.markdown("### Использованные источники")
 
     sources = result.get("sources", [])
 
     if not sources:
         st.info("Релевантные источники не найдены.")
+
     else:
-        for number, source in enumerate(
-            sources,
-            start=1,
-        ):
+        for number, source in enumerate(sources, start=1):
             doc_part = source.get("doc_part") or ""
             article = (
                 source.get("article")
@@ -498,6 +508,7 @@ if submit:
             )
             distance = source.get("distance")
 
+            # Расчёт процента совпадения
             if isinstance(distance, (int, float)):
                 similarity = max(
                     0.0,
@@ -507,9 +518,7 @@ if submit:
                     f"{similarity:.0%} совпадения"
                 )
             else:
-                similarity_label = (
-                    "релевантный фрагмент"
-                )
+                similarity_label = "релевантный фрагмент"
 
             part_label = (
                 f" · {doc_part}"
@@ -517,7 +526,7 @@ if submit:
                 else ""
             )
 
-            title = (
+            source_title = (
                 f"{number}. "
                 f"{source_name}"
                 f"{part_label} · "
@@ -525,7 +534,10 @@ if submit:
                 f"{similarity_label}"
             )
 
-            with st.expander(title):
+            with st.expander(source_title):
                 st.write(
-                    source.get("text", "")
+                    source.get(
+                        "text",
+                        "Текст источника отсутствует.",
+                    )
                 )
