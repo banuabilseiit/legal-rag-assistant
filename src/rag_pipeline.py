@@ -11,7 +11,7 @@ import chromadb
 from huggingface_hub import InferenceClient
 from sentence_transformers import SentenceTransformer
 
-EMBEDDING_MODEL_NAME = "intfloat/multilingual-e5-large"
+EMBEDDING_MODEL_NAME = "intfloat/multilingual-e5-base"
 LLM_MODEL_NAME = "Qwen/Qwen2.5-72B-Instruct"
 CHROMA_PATH = "chroma_db"
 COLLECTION_NAME = "legal_docs"
