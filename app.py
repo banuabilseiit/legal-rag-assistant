@@ -77,10 +77,6 @@ with st.sidebar:
     )
     mode = "official" if "Официальный" in mode_label else "simple"
 
-    top_k = st.slider("Количество источников для поиска", 1, 10, 5)
-
-    st.divider()
-    st.metric("Чанков в базе", collection.count())
 
 # ---------------------------------------------------------------------------
 # Основная область — вопрос и ответ
