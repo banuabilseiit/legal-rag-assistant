@@ -445,13 +445,32 @@ if submit:
                 st.code(str(error))
             st.stop()
 
-    safe_answer = html.escape(str(result["answer"])).replace("\n", "<br>")
+    safe_answer = html.escape(
+        str(result["answer"])
+    ).replace("\n", "<br>")
 
     st.markdown(
         f"""
-        <div class="answer-card">
-            <div class="answer-label">Ответ системы</div>
-            <div>{safe_answer}</div>
+        <div
+            class="answer-card"
+            style="
+                color: #000000 !important;
+                background-color: #ffffff;
+            "
+        >
+            <div class="answer-label">
+                Ответ системы
+            </div>
+
+            <div
+                style="
+                    color: #000000 !important;
+                    font-size: 1rem;
+                    line-height: 1.7;
+                "
+            >
+                {safe_answer}
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -464,24 +483,49 @@ if submit:
     if not sources:
         st.info("Релевантные источники не найдены.")
     else:
-        for number, source in enumerate(sources, start=1):
+        for number, source in enumerate(
+            sources,
+            start=1,
+        ):
             doc_part = source.get("doc_part") or ""
-            article = source.get("article") or "без номера статьи"
-            source_name = source.get("source") or "Источник"
+            article = (
+                source.get("article")
+                or "без номера статьи"
+            )
+            source_name = (
+                source.get("source")
+                or "Источник"
+            )
             distance = source.get("distance")
 
             if isinstance(distance, (int, float)):
-                similarity = max(0.0, min(1.0, 1 - distance))
-                similarity_label = f"{similarity:.0%} совпадения"
+                similarity = max(
+                    0.0,
+                    min(1.0, 1 - distance),
+                )
+                similarity_label = (
+                    f"{similarity:.0%} совпадения"
+                )
             else:
-                similarity_label = "релевантный фрагмент"
+                similarity_label = (
+                    "релевантный фрагмент"
+                )
 
-            part_label = f" · {doc_part}" if doc_part else ""
+            part_label = (
+                f" · {doc_part}"
+                if doc_part
+                else ""
+            )
 
             title = (
-                f"{number}. {source_name}{part_label} · "
-                f"{article} · {similarity_label}"
+                f"{number}. "
+                f"{source_name}"
+                f"{part_label} · "
+                f"{article} · "
+                f"{similarity_label}"
             )
 
             with st.expander(title):
-                st.write(source.get("text", ""))
+                st.write(
+                    source.get("text", "")
+                )
